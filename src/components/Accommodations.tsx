@@ -17,7 +17,7 @@ import {
   ChevronRight,
   Image as ImageIcon
 } from 'lucide-react'
-import { accommodations, commonInfo } from '../data/accommodations'
+import { accommodations } from '../data/accommodations'
 
 const Accommodations = () => {
   const ref = useRef(null)
@@ -169,7 +169,7 @@ const Accommodations = () => {
           className="mb-12"
         >
           <div className="flex flex-wrap gap-3 justify-center">
-            {activeApartments.map((apt, index) => (
+            {activeApartments.map((apt) => (
               <button
                 key={apt.id}
                 onClick={() => handleApartmentChange(apt)}
