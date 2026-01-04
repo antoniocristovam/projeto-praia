@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Calendar, Loader2, AlertCircle, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getMockBookedDates, mockICalData } from "../utils/mockCalendar";
 
 interface AvailabilityCalendarProps {
   icalUrl?: string;
@@ -24,47 +23,27 @@ const AvailabilityCalendar = ({
   const [bookedDates, setBookedDates] = useState<BookedDate[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [usingMockData, setUsingMockData] = useState(false);
 
   // Função para buscar disponibilidade do iCal
   const fetchAvailability = async () => {
-    if (!icalUrl) {
-      // Usar dados mock para teste
-      setLoading(true);
-      setTimeout(() => {
-        setBookedDates(getMockBookedDates());
-        setUsingMockData(true);
-        setLoading(false);
-      }, 1000);
-      return;
-    }
+    if (!icalUrl) return;
 
     setLoading(true);
     setError(null);
-    setUsingMockData(false);
 
     try {
       // Usar proxy CORS para buscar o iCal
       const proxyUrl = "https://api.allorigins.win/raw?url=";
       const response = await fetch(proxyUrl + encodeURIComponent(icalUrl));
 
-      if (!response.ok) {
-        // Fallback para dados mock
-        const dates = parseICalData(mockICalData);
-        setBookedDates(dates);
-        setUsingMockData(true);
-        return;
-      }
+      if (!response.ok) throw new Error("Erro ao buscar calendário");
 
       const icalData = await response.text();
       const dates = parseICalData(icalData);
       setBookedDates(dates);
     } catch (err) {
-      // Usar dados mock em caso de erro
-      console.log("Usando dados de teste - erro ao buscar iCal:", err);
-      const dates = parseICalData(mockICalData);
-      setBookedDates(dates);
-      setUsingMockData(true);
+      setError("Não foi possível carregar a disponibilidade");
+      console.error("Erro ao buscar iCal:", err);
     } finally {
       setLoading(false);
     }
@@ -234,18 +213,11 @@ const AvailabilityCalendar = ({
                     ✕
                   </button>
                 </div>
-                {usingMockData ? (
-                  <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 rounded-lg">
-                    <AlertCircle size={16} className="text-amber-600" />
-                    <p className="text-xs text-amber-700">
-                      Usando dados de teste - Configure o iCal real
-                    </p>
-                  </div>
-                ) : icalUrl ? (
+                {icalUrl && (
                   <p className="text-sm text-gray-600">
                     Sincronizado com Airbnb em tempo real
                   </p>
-                ) : null}
+                )}
               </div>
 
               {/* Content */}

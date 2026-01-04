@@ -46,9 +46,7 @@ export const accommodations: AccommodationData[] = [
     capacity: "Até 8 pessoas",
     hasImages: true,
     airbnbUrl: "https://www.airbnb.com.br/rooms/39025430",
-    // Link iCal de TESTE - substitua pelo seu depois
-    icalUrl:
-      "https://www.airbnb.com.br/calendar/ical/39025430.ics?s=6e193fef21b04bbb6ab5a8e922e29afa",
+    icalUrl: "", // Cole o link iCal do Airbnb aqui
     bookingUrl: "", // Cole o link do Booking aqui (opcional)
   },
   {
